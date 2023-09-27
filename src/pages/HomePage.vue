@@ -5,16 +5,21 @@ import AppAlert from '@/components/AppAlert.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import { useAuthStore } from '@/stores';
 import { onMounted, ref } from 'vue';
+import TimesheetFilters from '@/components/TimesheetFilters.vue';
 
 const timesheets = ref<Timesheet[] | null>(null);
 
+const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const url = `${baseUrl}/api/timesheets`;
+
 const links = ref<Link[] | null>(null);
 const user = useAuthStore();
+const queryParams = ref({});
 
-const fetchTimesheets = async (url: string) => {
+const fetchTimesheets = async (url: string, params = {}) => {
 	// set loader
 	try {
-		const { data } = await axiosInstance.get(url);
+		const { data } = await axiosInstance.get(url, { params });
 		timesheets.value = data.data;
 		links.value = data.links;
 	} catch (err) {
@@ -25,18 +30,21 @@ const fetchTimesheets = async (url: string) => {
 };
 
 const changePage = (url: string) => {
-	fetchTimesheets(url);
+	fetchTimesheets(url, queryParams.value);
+};
+
+const filterTimesheets = (newParams: Object) => {
+	queryParams.value = newParams;
+	fetchTimesheets(url, queryParams.value);
 };
 
 onMounted(() => {
-	const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-	const url = `${baseUrl}/api/timesheets`;
 	fetchTimesheets(url);
 });
 </script>
 
 <template>
+	<TimesheetFilters @filter-change="filterTimesheets" />
 	<div v-if="timesheets && timesheets.length > 0">
 		<div class="d-flex justify-content-end">
 			<AppPagination
@@ -46,7 +54,7 @@ onMounted(() => {
 			/>
 		</div>
 
-		<table class="table table-striped">
+		<table class="table table-striped shadow">
 			<thead>
 				<tr>
 					<th
