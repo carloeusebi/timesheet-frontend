@@ -5,6 +5,7 @@ import { createPinia } from 'pinia';
 import { markRaw } from 'vue';
 import { Router } from 'vue-router';
 import { useAuthStore } from './_auth';
+import { useLoaderStore } from './_loader';
 
 declare module 'pinia' {
 	export interface PiniaCustomProperties {
@@ -20,4 +21,4 @@ pinia.use(({ store }) => {
 	store.axios = markRaw(axiosInstance);
 });
 
-export { pinia, useAuthStore };
+export { pinia, useAuthStore, useLoaderStore };

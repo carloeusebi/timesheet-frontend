@@ -3,7 +3,7 @@ import axiosInstance from '@/assets/axios';
 import { Link, Timesheet } from '@/assets/interfaces';
 import AppAlert from '@/components/AppAlert.vue';
 import AppPagination from '@/components/AppPagination.vue';
-import { useAuthStore } from '@/stores';
+import { useAuthStore, useLoaderStore } from '@/stores';
 import { onMounted, ref } from 'vue';
 import TimesheetFilters from '@/components/TimesheetFilters.vue';
 
@@ -12,12 +12,14 @@ const timesheets = ref<Timesheet[] | null>(null);
 const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const url = `${baseUrl}/api/timesheets`;
 
-const links = ref<Link[] | null>(null);
 const user = useAuthStore();
+const loader = useLoaderStore();
+
+const links = ref<Link[] | null>(null);
 const queryParams = ref({});
 
 const fetchTimesheets = async (url: string, params = {}) => {
-	// set loader
+	loader.setLoader();
 	try {
 		const { data } = await axiosInstance.get(url, { params });
 		timesheets.value = data.data;
@@ -25,7 +27,7 @@ const fetchTimesheets = async (url: string, params = {}) => {
 	} catch (err) {
 		console.error(err);
 	} finally {
-		// unset loader
+		loader.unsetLoader();
 	}
 };
 
@@ -44,6 +46,10 @@ onMounted(() => {
 </script>
 
 <template>
+	<header class="my-4">
+		<h1 class="h3">Welcome, {{ user.user?.name }}</h1>
+	</header>
+
 	<TimesheetFilters @filter-change="filterTimesheets" />
 	<div v-if="timesheets && timesheets.length > 0">
 		<div class="d-flex justify-content-end">
@@ -81,7 +87,9 @@ onMounted(() => {
 					<td>{{ timesheet.date }}</td>
 					<td>{{ timesheet.hours }}</td>
 					<td>
-						<button class="btn btn-primary">View</button>
+						<RouterLink :to="{ name: 'timesheet-details', params: { id: timesheet.id } }">
+							<button class="btn btn-primary">View</button>
+						</RouterLink>
 					</td>
 				</tr>
 			</tbody>
@@ -89,7 +97,7 @@ onMounted(() => {
 	</div>
 	<div v-else>
 		<AppAlert
-			:show="true"
+			:show="!loader.isLoading"
 			type="info"
 		>
 			No Timesheets found.

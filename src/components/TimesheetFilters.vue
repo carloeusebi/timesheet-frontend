@@ -30,22 +30,10 @@ const removeEmptyProperties = (obj: QueryParams) => {
 	return cleanedObj;
 };
 
-/**
- * Syncs the url with the filters, not really needed but improves UX.
- */
-const syncUrlQueryParams = (queryParams: QueryParams) => {
-	const currentURL = new URL(window.location.href);
-	for (let key in queryParams) {
-		currentURL.searchParams.set(key, queryParams[key]);
-	}
-	window.history.replaceState({}, '', currentURL.toString());
-};
-
 const applyFilters = () => {
 	if (timeoutId) clearTimeout(timeoutId);
 	timeoutId = setTimeout(() => {
 		const cleanedQueryParams = removeEmptyProperties(queryParams.value);
-		syncUrlQueryParams(cleanedQueryParams);
 		emit('filter-change', cleanedQueryParams);
 	}, 500);
 };
@@ -78,6 +66,7 @@ const applyFilters = () => {
 						v-model="queryParams.employee"
 						class="form-control"
 						type="text"
+						id="employee"
 					/>
 				</div>
 
@@ -89,6 +78,7 @@ const applyFilters = () => {
 						v-model="queryParams.project"
 						class="form-control"
 						type="text"
+						id="project"
 					/>
 				</div>
 
@@ -100,6 +90,7 @@ const applyFilters = () => {
 						v-model="queryParams.activity"
 						class="form-control"
 						type="text"
+						id="activity"
 					/>
 				</div>
 
@@ -111,6 +102,7 @@ const applyFilters = () => {
 						v-model="queryParams.dateFrom"
 						class="form-control"
 						type="date"
+						id="dateFrom"
 					/>
 				</div>
 
@@ -119,6 +111,7 @@ const applyFilters = () => {
 					<label for="dateTo"> To </label>
 					<input
 						@input="applyFilters"
+						id="dateTo"
 						v-model="queryParams.dateTo"
 						class="form-control"
 						type="date"
