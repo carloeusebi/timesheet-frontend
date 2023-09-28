@@ -6,6 +6,7 @@ import AppPagination from '@/components/AppPagination.vue';
 import { useAuthStore, useLoaderStore } from '@/stores';
 import { onMounted, ref } from 'vue';
 import TimesheetFilters from '@/components/TimesheetFilters.vue';
+import { calculateHours } from '@/assets/helpers';
 
 const timesheets = ref<Timesheet[] | null>(null);
 
@@ -25,28 +26,7 @@ const queryParams = ref<Object>({});
  * Localize a UTC DateTime
  * @param date The UTC DateTime.
  */
-const localizeDate = (date: string) => {
-	const utcDate = new Date(date);
-	const localDate = new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
-
-	return localDate.toLocaleDateString();
-};
-
-/**
- * Calculates the activity duration based on the start and the end.
- * @param start - The starting DateTime
- * @param end - The end DateTime
- */
-const calculateHours = (start: string, end: string) => {
-	const oneHour = 3_600_000;
-
-	const startTime = new Date(start).getTime();
-	const endTime = new Date(end).getTime();
-
-	const hours = (endTime - startTime) / oneHour;
-
-	return Math.floor(hours);
-};
+const localizeDate = (date: string) => new Date(date).toLocaleDateString();
 
 /**
  * Fetches the timesheets. Page and Query Params are configurable.

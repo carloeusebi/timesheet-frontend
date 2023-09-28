@@ -7,6 +7,7 @@ import { useAuthStore, useLoaderStore } from '@/stores';
 import AppAlert from '@/components/AppAlert.vue';
 import TimesheetForm from '@/components/TimesheetForm.vue';
 import { isAxiosError } from 'axios';
+import { calculateHours } from '@/assets/helpers';
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -22,7 +23,7 @@ const fetchTimesheet = async (id: string) => {
 	loader.setLoader();
 	try {
 		const { data } = await axiosInstance.get(`timesheets/${id}`);
-		timesheet.value = data;
+		timesheet.value = { ...data };
 	} catch (err) {
 		console.error(err);
 	} finally {
@@ -94,8 +95,9 @@ onMounted(async () => {
 				<ul class="list-unstyled">
 					<li><strong>Project: </strong>{{ timesheet.project.name }}</li>
 					<li><strong>Activity: </strong>{{ timesheet.activity.name }}</li>
-					<li><strong>Date: </strong>{{ timesheet.date }}</li>
-					<li><strong>Hours: </strong>{{ timesheet.hours }}</li>
+					<li><strong>Start: </strong>{{ new Date(timesheet.activityStart).toLocaleString() }}</li>
+					<li><strong>End: </strong>{{ new Date(timesheet.activityEnd).toLocaleString() }}</li>
+					<li><strong>Hours: </strong>{{ calculateHours(timesheet.activityStart, timesheet.activityEnd) }}</li>
 				</ul>
 				<div><strong>Description:</strong></div>
 				<p>

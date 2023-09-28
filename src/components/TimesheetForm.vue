@@ -16,11 +16,14 @@ const userProjects = ref<Project[] | null>();
 const selectedProjectId = ref<number | null>(props.timesheet?.project?.id || null);
 const selectedActivityId = ref<number | null>(props.timesheet?.activity?.id || null);
 const description = ref(props.timesheet?.description || '');
-const hours = ref(props.timesheet?.hours || '');
 
-// sets default date to today
-const today = new Date().toISOString().slice(0, 10);
-const date = ref(props.timesheet?.date || today);
+// sets default datetime start to now
+const now = new Date().toISOString().slice(0, 16);
+const activityStart = ref(props.timesheet?.activityStart || now);
+
+// set default datetime end to 8 hours from now
+const eightHoursFromNow = new Date(new Date().getTime() + 8 * 3_600_000).toISOString().slice(0, 16);
+const activityEnd = ref(props.timesheet?.activityEnd || eightHoursFromNow);
 
 const emit = defineEmits(['form-submit']);
 
@@ -43,6 +46,13 @@ const thereAreErrors = computed(() => Object.keys(props.errors).length > 0);
  * Builds the form and emits the form submission event.
  */
 const handleFormSubmission = () => {
+	const fromLocalToUTC = (datetime: string) => {
+		const localDate = new Date(datetime);
+		const utcDate = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60_000);
+
+		return utcDate.toISOString().slice(0, 19).replace('T', ' ');
+	};
+
 	const userId = useAuthStore().user?.id;
 
 	const form = {
@@ -51,8 +61,8 @@ const handleFormSubmission = () => {
 		projectId: selectedProjectId.value,
 		activityId: selectedActivityId.value,
 		description: description.value,
-		hours: hours.value,
-		date: date.value,
+		activityStart: fromLocalToUTC(activityStart.value),
+		activityEnd: fromLocalToUTC(activityEnd.value),
 	};
 	// todo frontend validation
 
@@ -121,24 +131,23 @@ onMounted(async () => {
 			</div>
 			<!-- DATE -->
 			<div>
-				<label for="date">Date</label>
+				<label for="date">Activity Begin Hour:</label>
 				<input
 					id="date"
-					type="date"
+					type="datetime-local"
 					class="form-control"
-					v-model="date"
+					v-model="activityStart"
 				/>
 			</div>
 			<!-- HOURS -->
+
 			<div>
-				<label for="hours">Hours</label>
+				<label for="date">Activity End Hour:</label>
 				<input
-					id="hours"
-					type="number"
+					id="date"
+					type="datetime-local"
 					class="form-control"
-					max="8"
-					min="1"
-					v-model="hours"
+					v-model="activityEnd"
 				/>
 			</div>
 		</div>
