@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue';
 import { fetch } from '@/assets/helpers';
 
 interface Props {
+	errors: { [field: string]: string };
 	project?: Project;
 	userIds: number[];
 	activityIds: number[];
@@ -49,8 +50,12 @@ onMounted(async () => {
 					type="text"
 					id="name"
 					class="form-control"
+					:class="{ 'is-invalid': errors.name }"
 					v-model="name"
 				/>
+				<div class="invalid-feedback">
+					{{ errors.name }}
+				</div>
 				<!-- ACTIVITIES -->
 				<hr />
 				<section id="activities">

@@ -8,6 +8,7 @@ import { fetch } from '@/assets/helpers';
 import ProjectForm from '@/components/ProjectForm.vue';
 import axiosInstance from '@/assets/axios';
 import AppDelete from '@/components/AppDelete.vue';
+import { isAxiosError } from 'axios';
 
 const loader = useLoaderStore();
 const id = useRoute().params.id;
@@ -15,6 +16,8 @@ const id = useRoute().params.id;
 const project = ref<Project | null>(null);
 const userIds = ref<number[] | null>(null);
 const activityIds = ref<number[] | null>(null);
+
+const errors = ref<{ [field: string]: string }>({});
 
 /**
  * Fetch the project, creates two arrays with the user and activity ids
@@ -30,12 +33,15 @@ onMounted(async () => {
 
 const handleFormSubmission = async (updatedProject: Project) => {
 	loader.setLoader();
-	console.log(updatedProject);
 	try {
 		await axiosInstance.put(`projects/${updatedProject.id}`, updatedProject);
 		alert('Project updated with success!');
 	} catch (err) {
-		alert(err);
+		if (isAxiosError(err)) {
+			// build the error object;
+			const errorsInResponse = err.response?.data.errors;
+			for (let field in errorsInResponse) errors.value[field] = errorsInResponse[field][0];
+		}
 	} finally {
 		loader.unsetLoader();
 	}
@@ -62,6 +68,7 @@ const handleFormSubmission = async (updatedProject: Project) => {
 					<ProjectForm
 						v-if="userIds && activityIds"
 						@form-submit="handleFormSubmission"
+						:errors="errors"
 						:user-ids="userIds"
 						:activity-ids="activityIds"
 						:project="project"

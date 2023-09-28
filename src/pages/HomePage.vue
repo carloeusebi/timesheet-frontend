@@ -92,8 +92,8 @@ onMounted(() => {
 					:key="timesheet.id"
 				>
 					<td v-if="user.isAdmin">{{ timesheet.user.name }}</td>
-					<td>{{ timesheet.project.name }}</td>
-					<td>{{ timesheet.activity.name }}</td>
+					<td>{{ timesheet.project?.name ?? 'Project Deleted' }}</td>
+					<td>{{ timesheet.activity.name ?? 'Activity Deleted' }}</td>
 					<td>{{ timesheet.date }}</td>
 					<td>{{ timesheet.hours }}</td>
 					<td>

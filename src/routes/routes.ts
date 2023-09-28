@@ -6,6 +6,7 @@ import TimesheetCreate from '@/pages/TimesheetCreate.vue';
 import DashboardPage from '@/pages/DashboardPage.vue';
 import ForbiddenPage from '@/pages/ForbiddenPage.vue';
 import ProjectsDetails from '@/pages/ProjectsDetails.vue';
+import ProjectCreate from '@/pages/ProjectCreate.vue';
 
 export const routes = [
 	// LOGIN PAGE
@@ -55,6 +56,7 @@ export const routes = [
 		children: [
 			{ path: '/dashboard', component: DashboardPage, name: 'dashboard' },
 			{ path: '/projects/:id', component: ProjectsDetails, name: 'projects-details' },
+			{ path: '/projects/create', component: ProjectCreate, name: 'projects-create' },
 		],
 	},
 	{

@@ -37,7 +37,9 @@ onMounted(async () => {
 			<div class="card mb-3">
 				<div class="card-header d-flex justify-content-between align-items-center">
 					<h5 class="card-title mb-0">Active Projects</h5>
-					<button class="btn btn-secondary">Add new Project</button>
+					<RouterLink :to="{ name: 'projects-create' }">
+						<button class="btn btn-secondary">Add new Project</button>
+					</RouterLink>
 				</div>
 				<ul class="list-group list-group-flush">
 					<RouterLink
