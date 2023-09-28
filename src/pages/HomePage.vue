@@ -16,8 +16,44 @@ const user = useAuthStore();
 const loader = useLoaderStore();
 
 const links = ref<Link[] | null>(null);
-const queryParams = ref({});
+/**
+ * Saves the query params to keep them consistent when changing page.
+ */
+const queryParams = ref<Object>({});
 
+/**
+ * Localize a UTC DateTime
+ * @param date The UTC DateTime.
+ */
+const localizeDate = (date: string) => {
+	const utcDate = new Date(date);
+	const localDate = new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60000);
+
+	return localDate.toLocaleDateString();
+};
+
+/**
+ * Calculates the activity duration based on the start and the end.
+ * @param start - The starting DateTime
+ * @param end - The end DateTime
+ */
+const calculateHours = (start: string, end: string) => {
+	const oneHour = 3_600_000;
+
+	const startTime = new Date(start).getTime();
+	const endTime = new Date(end).getTime();
+
+	const hours = (endTime - startTime) / oneHour;
+
+	return Math.floor(hours);
+};
+
+/**
+ * Fetches the timesheets. Page and Query Params are configurable.
+ *
+ * @param url - Can be different based on the requesting page.
+ * @param params - Additional query params like the employee's name or the date range.
+ */
 const fetchTimesheets = async (url: string, params = {}) => {
 	loader.setLoader();
 	try {
@@ -57,7 +93,7 @@ onMounted(() => {
 
 	<div v-if="!user.isAdmin">
 		<RouterLink :to="{ name: 'timesheet-create' }">
-			<button class="btn btn-success mb-2">Log a new Timesheet</button>
+			<button class="btn btn-success mb-2">Log a new Activity</button>
 		</RouterLink>
 	</div>
 	<TimesheetFilters @filter-change="filterTimesheets" />
@@ -94,8 +130,8 @@ onMounted(() => {
 					<td v-if="user.isAdmin">{{ timesheet.user.name }}</td>
 					<td>{{ timesheet.project?.name ?? 'Project Deleted' }}</td>
 					<td>{{ timesheet.activity.name ?? 'Activity Deleted' }}</td>
-					<td>{{ timesheet.date }}</td>
-					<td>{{ timesheet.hours }}</td>
+					<td>{{ localizeDate(timesheet.activityStart) }}</td>
+					<td>{{ calculateHours(timesheet.activityStart, timesheet.activityEnd) }}</td>
 					<td>
 						<RouterLink :to="{ name: 'timesheet-details', params: { id: timesheet.id } }">
 							<button class="btn btn-primary">View</button>

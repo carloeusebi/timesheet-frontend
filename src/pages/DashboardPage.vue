@@ -78,7 +78,7 @@ onMounted(async () => {
 			<div class="card">
 				<div class="card-header d-flex justify-content-between align-items-center">
 					<h5 class="card-tile">Employees</h5>
-					<button class="btn btn-secondary">Add new User</button>
+					<button class="btn btn-secondary">Add new Employee</button>
 				</div>
 				<div class="users-card">
 					<ul class="list-group list-group-flush">

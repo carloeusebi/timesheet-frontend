@@ -35,7 +35,7 @@ export interface Timesheet {
 	project: Project;
 	activity: Activity;
 	user: User;
-	date: string;
-	hours: string;
+	activityStart: string;
+	activityEnd: string;
 	description: string;
 }
