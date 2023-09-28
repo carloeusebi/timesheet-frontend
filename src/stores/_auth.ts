@@ -34,7 +34,9 @@ export const useAuthStore = defineStore('auth', {
 					this.user = data;
 					localStorage.setItem('USER', JSON.stringify(data));
 
-					this.router.push({ name: 'home' });
+					const name = this.isAdmin ? 'dashboard' : 'home';
+
+					this.router.push({ name });
 				})
 				.catch(err => {
 					throw err;

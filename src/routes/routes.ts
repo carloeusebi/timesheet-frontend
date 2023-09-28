@@ -3,6 +3,9 @@ import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
 import TimesheetDetails from '@/pages/TimesheetDetails.vue';
 import TimesheetCreate from '@/pages/TimesheetCreate.vue';
+import DashboardPage from '@/pages/DashboardPage.vue';
+import ForbiddenPage from '@/pages/ForbiddenPage.vue';
+import ProjectsDetails from '@/pages/ProjectsDetails.vue';
 
 export const routes = [
 	// LOGIN PAGE
@@ -42,5 +45,21 @@ export const routes = [
 				},
 			},
 		],
+	},
+	{
+		path: '/admin',
+		component: MainLayout,
+		meta: {
+			requiresAdmin: true,
+		},
+		children: [
+			{ path: '/dashboard', component: DashboardPage, name: 'dashboard' },
+			{ path: '/projects/:id', component: ProjectsDetails, name: 'projects-details' },
+		],
+	},
+	{
+		path: '/forbidden',
+		component: ForbiddenPage,
+		name: 'forbidden',
 	},
 ];

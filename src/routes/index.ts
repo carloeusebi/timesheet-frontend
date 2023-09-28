@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores';
 const router = createRouter({
 	history: createWebHistory(),
 	routes,
-	linkActiveClass: '', //todo
+	linkActiveClass: 'active',
 });
 
 // MIDDLEWARES
@@ -31,6 +31,10 @@ router.beforeEach((to, _from, next) => {
 	}
 
 	//ADMIN MIDDLEWARE
+	if (to.meta.requiresAdmin) {
+		if (user.isAdmin) return next();
+		else return next({ name: 'forbidden' });
+	}
 
 	next();
 });

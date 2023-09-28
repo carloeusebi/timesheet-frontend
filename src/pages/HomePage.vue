@@ -47,7 +47,12 @@ onMounted(() => {
 
 <template>
 	<header class="my-4">
-		<h1 class="h3">Welcome, {{ user.user?.name }}</h1>
+		<h1
+			class="h3"
+			v-if="!user.isAdmin"
+		>
+			Welcome, {{ user.user?.name }}
+		</h1>
 	</header>
 
 	<div v-if="!user.isAdmin">
