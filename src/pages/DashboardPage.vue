@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import axiosInstance from '@/assets/axios';
 import { Activity, Project, User } from '@/assets/interfaces';
 import { useLoaderStore } from '@/stores';
-import { ref, onMounted, Ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { fetch } from '@/assets/helpers';
 
 const users = ref<User[] | null>(null);
 const projects = ref<Project[] | null>(null);
@@ -11,11 +11,6 @@ const activities = ref<Activity[] | null>(null);
 const loader = useLoaderStore();
 
 onMounted(async () => {
-	const fetch = async (endpoint: string, ref: Ref) => {
-		const { data } = await axiosInstance.get(endpoint);
-		ref.value = data;
-	};
-
 	loader.setLoader();
 	try {
 		await Promise.all([fetch('users', users), fetch('projects', projects), fetch('activities', activities)]);
@@ -45,13 +40,15 @@ onMounted(async () => {
 					<button class="btn btn-secondary">Add new Project</button>
 				</div>
 				<ul class="list-group list-group-flush">
-					<li
+					<RouterLink
 						v-for="project in projects"
 						:key="project.id"
-						class="list-group-item"
+						:to="{ name: 'projects-details', params: { id: project.id } }"
 					>
-						{{ project.name }}
-					</li>
+						<li class="list-group-item">
+							{{ project.name }}
+						</li>
+					</RouterLink>
 				</ul>
 			</div>
 
@@ -78,7 +75,7 @@ onMounted(async () => {
 			<!-- USERS -->
 			<div class="card">
 				<div class="card-header d-flex justify-content-between align-items-center">
-					<h5 class="card-tile">Users</h5>
+					<h5 class="card-tile">Employees</h5>
 					<button class="btn btn-secondary">Add new User</button>
 				</div>
 				<div class="users-card">
