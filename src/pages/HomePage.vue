@@ -50,6 +50,11 @@ onMounted(() => {
 		<h1 class="h3">Welcome, {{ user.user?.name }}</h1>
 	</header>
 
+	<div v-if="!user.isAdmin">
+		<RouterLink :to="{ name: 'timesheet-create' }">
+			<button class="btn btn-success mb-2">Log a new Timesheet</button>
+		</RouterLink>
+	</div>
 	<TimesheetFilters @filter-change="filterTimesheets" />
 	<div v-if="timesheets && timesheets.length > 0">
 		<div class="d-flex justify-content-end">

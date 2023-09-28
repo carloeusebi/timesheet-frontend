@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { Project, Timesheet } from '@/assets/interfaces';
+import { Timesheet } from '@/assets/interfaces';
 import axiosInstance from '@/assets/axios';
 import { useAuthStore, useLoaderStore } from '@/stores';
 import AppAlert from '@/components/AppAlert.vue';
@@ -12,7 +12,6 @@ const route = useRoute();
 const id = route.params.id as string;
 
 const timesheet = ref<Timesheet | null>(null);
-const userProjects = ref<Project[] | null>(null);
 const loader = useLoaderStore();
 const user = useAuthStore();
 const editMode = ref(false);
@@ -31,16 +30,18 @@ const fetchTimesheet = async (id: string) => {
 	}
 };
 
-const fetchProjects = async () => {
-	const { data } = await axiosInstance.get('projects');
-	userProjects.value = data;
-};
-
-const handleFormSubmission = async (timesheet: Timesheet) => {
+/**
+ * Handles the update form submission.
+ *
+ * @param timesheet - The Timesheet with the updated data
+ */
+const handleFormSubmission = async (updatedTimesheet: Timesheet) => {
 	loader.setLoader();
 	errors.value = {};
 	try {
-		await axiosInstance.put(`timesheets/${timesheet.id}`, timesheet);
+		const { data } = await axiosInstance.put(`timesheets/${updatedTimesheet.id}`, updatedTimesheet);
+		timesheet.value = { ...data };
+		editMode.value = false;
 	} catch (err) {
 		if (isAxiosError(err)) {
 			// build the error object;
@@ -55,7 +56,6 @@ const handleFormSubmission = async (timesheet: Timesheet) => {
 
 onMounted(async () => {
 	fetchTimesheet(id);
-	fetchProjects();
 });
 </script>
 
@@ -84,7 +84,6 @@ onMounted(async () => {
 				<TimesheetForm
 					@form-submit="handleFormSubmission"
 					:timesheet="timesheet"
-					:user-projects="userProjects"
 					:errors="errors"
 				/>
 			</div>

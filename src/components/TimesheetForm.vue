@@ -1,31 +1,40 @@
 <script lang="ts" setup>
 import { Project, Timesheet } from '@/assets/interfaces';
 import { useAuthStore } from '@/stores';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import AppAlert from './AppAlert.vue';
+import axiosInstance from '@/assets/axios';
 
 interface Props {
-	timesheet: Timesheet;
-	userProjects: Project[] | null;
+	timesheet?: Timesheet;
 	errors: { [field: string]: string };
 }
 const props = defineProps<Props>();
+const userProjects = ref<Project[] | null>();
 
 // all the form's field, with defaults based on the timesheet prop
-const selectedProjectId = ref<number | null>(props.timesheet.project.id);
-const selectedActivityId = ref<number | null>(props.timesheet.activity.id);
-const description = ref(props.timesheet.description);
-const hours = ref(props.timesheet.hours);
-const date = ref(props.timesheet.date);
+const selectedProjectId = ref<number | null>(props.timesheet?.project?.id || null);
+const selectedActivityId = ref<number | null>(props.timesheet?.activity?.id || null);
+const description = ref(props.timesheet?.description || '');
+const hours = ref(props.timesheet?.hours || '');
+
+// sets default date to today
+const today = new Date().toISOString().slice(0, 10);
+const date = ref(props.timesheet?.date || today);
 
 const emit = defineEmits(['form-submit']);
+
+const fetchProjects = async () => {
+	const { data } = await axiosInstance.get('projects');
+	userProjects.value = data;
+};
 
 /**
  * Calculates the activities based on the current selected project
  */
 const projectActivities = computed(() => {
-	if (!props.userProjects) return [];
-	const selectedProject = props.userProjects.find(({ id }) => id === selectedProjectId.value);
+	if (!userProjects.value) return [];
+	const selectedProject = userProjects.value.find(({ id }) => id === selectedProjectId.value);
 	return selectedProject?.activities;
 });
 const thereAreErrors = computed(() => Object.keys(props.errors).length > 0);
@@ -37,7 +46,7 @@ const handleFormSubmission = () => {
 	const userId = useAuthStore().user?.id;
 
 	const form = {
-		id: props.timesheet.id,
+		id: props.timesheet?.id ?? null,
 		userId,
 		projectId: selectedProjectId.value,
 		activityId: selectedActivityId.value,
@@ -49,6 +58,10 @@ const handleFormSubmission = () => {
 
 	emit('form-submit', form);
 };
+
+onMounted(async () => {
+	fetchProjects();
+});
 </script>
 
 <template>
@@ -82,7 +95,7 @@ const handleFormSubmission = () => {
 						v-for="project in userProjects"
 						:key="project.id"
 						:value="project.id"
-						:selected="project.id == timesheet.project.id"
+						:selected="project.id == timesheet?.project?.id"
 					>
 						{{ project.name }}
 					</option>
@@ -100,7 +113,7 @@ const handleFormSubmission = () => {
 						v-for="activity in projectActivities"
 						:key="activity.id"
 						:value="activity.id"
-						:selected="activity.id == timesheet.activity.id"
+						:selected="activity.id == timesheet?.activity?.id"
 					>
 						{{ activity.name }}
 					</option>

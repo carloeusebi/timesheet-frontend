@@ -1,7 +1,8 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import HomePage from '@/pages/HomePage.vue';
 import LoginPage from '@/pages/LoginPage.vue';
-import TimesheetDetailsVue from '@/pages/TimesheetDetails.vue';
+import TimesheetDetails from '@/pages/TimesheetDetails.vue';
+import TimesheetCreate from '@/pages/TimesheetCreate.vue';
 
 export const routes = [
 	// LOGIN PAGE
@@ -29,8 +30,16 @@ export const routes = [
 			},
 			{
 				path: '/timesheets/:id',
-				component: TimesheetDetailsVue,
+				component: TimesheetDetails,
 				name: 'timesheet-details',
+			},
+			{
+				path: '/timesheets/create',
+				component: TimesheetCreate,
+				name: 'timesheet-create',
+				meta: {
+					forbidsAdmin: true,
+				},
 			},
 		],
 	},

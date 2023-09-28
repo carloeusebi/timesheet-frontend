@@ -15,17 +15,24 @@ router.beforeEach((to, _from, next) => {
 
 	// GUEST MIDDLEWARE
 	if (to.meta.requiresGuest) {
-		if (!user.isGuest) next({ name: 'home' });
-		else next();
+		if (!user.isGuest) return next({ name: 'home' });
+		else return next();
 	}
 
-	//USER MIDDLEWARE
+	// USER MIDDLEWARE
 	if (to.meta.requiresUser) {
-		if (user.isGuest) next({ name: 'login' });
-		else next();
+		if (user.isGuest) {
+			return next({ name: 'login' });
+		}
+
+		if (to.meta.forbidsAdmin && user.isAdmin) {
+			return next({ name: 'home' });
+		}
 	}
 
 	//ADMIN MIDDLEWARE
+
+	next();
 });
 
 export default router;
