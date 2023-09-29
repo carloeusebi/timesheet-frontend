@@ -27,3 +27,14 @@ export const calculateHours = (start: string, end: string) => {
 
 	return Math.floor(hours);
 };
+
+/**
+ * Localize an UTC DateTime.
+ * 
+ * @param datetime The UTC Datetime to localize
+ * @returns The local DateTime
+ */
+export const localizeTime = (datetime:string) => {
+	const utc = new Date(datetime);
+	return new Date(utc.getTime() - utc.getTimezoneOffset() *60000 )
+}

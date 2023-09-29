@@ -7,7 +7,7 @@ import { useAuthStore, useLoaderStore } from '@/stores';
 import AppAlert from '@/components/AppAlert.vue';
 import TimesheetForm from '@/components/TimesheetForm.vue';
 import { isAxiosError } from 'axios';
-import { calculateHours } from '@/assets/helpers';
+import { calculateHours, localizeTime } from '@/assets/helpers';
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -16,14 +16,13 @@ const timesheet = ref<Timesheet | null>(null);
 const loader = useLoaderStore();
 const user = useAuthStore();
 const editMode = ref(false);
-
 const errors = ref<{ [field: string]: string }>({});
 
 const fetchTimesheet = async (id: string) => {
 	loader.setLoader();
 	try {
 		const { data } = await axiosInstance.get(`timesheets/${id}`);
-		timesheet.value = { ...data };
+		timesheet.value = {...data};
 	} catch (err) {
 		console.error(err);
 	} finally {
@@ -95,9 +94,9 @@ onMounted(async () => {
 				<ul class="list-unstyled">
 					<li><strong>Project: </strong>{{ timesheet.project.name }}</li>
 					<li><strong>Activity: </strong>{{ timesheet.activity.name }}</li>
-					<li><strong>Start: </strong>{{ new Date(timesheet.activityStart).toLocaleString() }}</li>
-					<li><strong>End: </strong>{{ new Date(timesheet.activityEnd).toLocaleString() }}</li>
-					<li><strong>Hours: </strong>{{ calculateHours(timesheet.activityStart, timesheet.activityEnd) }}</li>
+					<li><strong>Start: </strong>{{ localizeTime(timesheet.activityStart) }}</li>
+					<li><strong>End: </strong>{{ localizeTime(timesheet.activityEnd) }}</li>
+					<li><strong>Hours: </strong>{{ calculateHours(timesheet.activityStart, timesheet.activityEnd)}}</li>
 				</ul>
 				<div><strong>Description:</strong></div>
 				<p>
