@@ -9,6 +9,8 @@ import ProjectsDetails from '@/pages/ProjectsDetails.vue';
 import ProjectCreate from '@/pages/ProjectCreate.vue';
 import UserDetails from '@/pages/UserDetails.vue';
 import UserCreate from '@/pages/UserCreate.vue';
+import ActivityDetails from '@/pages/ActivityDetails.vue';
+import ActivityCreate from '@/pages/ActivityCreate.vue';
 
 export const routes = [
   // LOGIN PAGE
@@ -69,6 +71,16 @@ export const routes = [
       },
       { path: '/users/:id', component: UserDetails, name: 'users-details' },
       { path: '/users/create', component: UserCreate, name: 'users-create' },
+      {
+        path: '/activities/:id',
+        component: ActivityDetails,
+        name: 'activities-details',
+      },
+      {
+        path: '/activities/create',
+        component: ActivityCreate,
+        name: 'activities-create',
+      },
     ],
   },
   {

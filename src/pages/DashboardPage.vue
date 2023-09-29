@@ -69,7 +69,9 @@ onMounted(async () => {
           class="card-header d-flex justify-content-between align-items-center"
         >
           <h5 class="card-title mb-0">Activities</h5>
-          <button class="btn btn-secondary">Add new Activity</button>
+          <RouterLink :to="{ name: 'activities-create' }">
+            <button class="btn btn-secondary">Add new Activity</button>
+          </RouterLink>
         </div>
         <ul class="list-group list-group-flush">
           <li
@@ -77,7 +79,12 @@ onMounted(async () => {
             :key="activity.id"
             class="list-group-item"
           >
-            {{ activity.name }}
+            <RouterLink
+              :to="{ name: 'activities-details', params: { id: activity.id } }"
+              class="d-block w-100 h-100"
+            >
+              {{ activity.name }}
+            </RouterLink>
           </li>
         </ul>
       </div>
