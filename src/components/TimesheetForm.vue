@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Project, Timesheet } from "@/assets/interfaces";
-import { useAuthStore } from "@/stores";
-import { computed, ref, onMounted } from "vue";
-import AppAlert from "./AppAlert.vue";
-import axiosInstance from "@/assets/axios";
-import { localizeTime } from "@/assets/helpers";
+import { Project, Timesheet } from '@/assets/interfaces';
+import { useAuthStore } from '@/stores';
+import { computed, ref, onMounted } from 'vue';
+import AppAlert from './AppAlert.vue';
+import axiosInstance from '@/assets/axios';
+import { localizeTime } from '@/assets/helpers';
 
 interface Props {
   timesheet?: Timesheet;
@@ -20,21 +20,21 @@ const selectedProjectId = ref<number | null>(
 const selectedActivityId = ref<number | null>(
   props.timesheet?.activity?.id || null
 );
-const description = ref(props.timesheet?.description || "");
+const description = ref(props.timesheet?.description || '');
 
 /**
  * Format a date in the format `yyyy-MM-ddThh:mm` for the input type=datetime-local
  */
 const formatDateForDatetimeLocal = (datetime: string | undefined) => {
-  if (!datetime) return "";
+  if (!datetime) return '';
   const date = localizeTime(datetime);
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-based, so add 1
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so add 1
+  const day = String(date.getDate()).padStart(2, '0');
 
   // Get the time components
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
@@ -49,10 +49,10 @@ const activityEnd = ref(
   formatDateForDatetimeLocal(props.timesheet?.activityEnd)
 );
 
-const emit = defineEmits(["form-submit"]);
+const emit = defineEmits(['form-submit']);
 
 const fetchProjects = async () => {
-  const { data } = await axiosInstance.get("projects");
+  const { data } = await axiosInstance.get('projects');
   userProjects.value = data;
 };
 
@@ -75,13 +75,12 @@ const handleFormSubmission = () => {
   const fromLocalToUTC = (datetime: string) => {
     const localDate = new Date(datetime);
 
-    return localDate.toISOString().slice(0, 19).replace("T", " ");
+    return localDate.toISOString().slice(0, 19).replace('T', ' ');
   };
 
   const userId = useAuthStore().user?.id;
 
   const form = {
-    id: props.timesheet?.id ?? null,
     userId,
     projectId: selectedProjectId.value,
     activityId: selectedActivityId.value,
@@ -91,7 +90,7 @@ const handleFormSubmission = () => {
   };
   // todo frontend validation
 
-  emit("form-submit", form);
+  emit('form-submit', form);
 };
 
 onMounted(async () => {
