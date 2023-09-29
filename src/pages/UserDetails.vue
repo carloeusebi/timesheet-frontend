@@ -8,6 +8,7 @@ import { useLoaderStore } from '@/stores';
 import AppAlert from '@/components/AppAlert.vue';
 import axiosInstance from '@/assets/axios';
 import { isAxiosError } from 'axios';
+import AppDelete from '@/components/AppDelete.vue';
 
 const id = useRoute().params.id;
 const user = ref<User | null>(null);
@@ -49,9 +50,12 @@ const handleFormSubmission = async (toUpdateUser: User) => {
 
 <template>
   <div class="my-5">
-    <RouterLink :to="{ name: 'dashboard' }">
-      <button class="btn btn-secondary mb-3">Back</button>
-    </RouterLink>
+    <div class="mb-5">
+      <RouterLink :to="{ name: 'dashboard' }">
+        <button class="btn btn-secondary">Back</button>
+      </RouterLink>
+      <AppDelete v-if="user" class="ms-2" :endpoint="`users/${user.id}`" />
+    </div>
 
     <!-- USER CARD -->
     <div class="card" v-if="user">
