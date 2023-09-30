@@ -76,7 +76,7 @@ onMounted(async () => {
   </button>
   <div class="card" v-if="timesheet">
     <div class="card-body">
-      <strong>Employee: </strong>{{ timesheet.user.name }}
+      <strong>Employee: </strong>{{ timesheet.employee }}
       <div class="card-content" v-if="editMode">
         <hr />
         <TimesheetForm
@@ -87,8 +87,8 @@ onMounted(async () => {
       </div>
       <div v-else class="card-content">
         <ul class="list-unstyled">
-          <li><strong>Project: </strong>{{ timesheet.project.name }}</li>
-          <li><strong>Activity: </strong>{{ timesheet.activity.name }}</li>
+          <li><strong>Project: </strong>{{ timesheet.project }}</li>
+          <li><strong>Activity: </strong>{{ timesheet.activity }}</li>
           <li>
             <strong>Start: </strong>{{ localizeTime(timesheet.activityStart) }}
           </li>

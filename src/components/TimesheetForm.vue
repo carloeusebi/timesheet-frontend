@@ -15,10 +15,10 @@ const userProjects = ref<Project[] | null>();
 
 // all the form's field, with defaults based on the timesheet prop
 const selectedProjectId = ref<number | null>(
-  props.timesheet?.project?.id || null
+  props.timesheet?.projectId || null
 );
 const selectedActivityId = ref<number | null>(
-  props.timesheet?.activity?.id || null
+  props.timesheet?.activityId || null
 );
 const description = ref(props.timesheet?.description || '');
 
@@ -119,7 +119,7 @@ onMounted(async () => {
             v-for="project in userProjects"
             :key="project.id"
             :value="project.id"
-            :selected="project.id == timesheet?.project?.id"
+            :selected="project.id === timesheet?.projectId"
           >
             {{ project.name }}
           </option>
@@ -133,7 +133,7 @@ onMounted(async () => {
             v-for="activity in projectActivities"
             :key="activity.id"
             :value="activity.id"
-            :selected="activity.id == timesheet?.activity?.id"
+            :selected="activity.id == timesheet?.activityId"
           >
             {{ activity.name }}
           </option>
