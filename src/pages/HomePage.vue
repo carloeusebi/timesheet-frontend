@@ -39,7 +39,7 @@ const fetchTimesheets = async (url: string, params = {}) => {
   try {
     const { data } = await axiosInstance.get(url, { params });
     timesheets.value = data.data;
-    links.value = data.links;
+    links.value = data.meta.links;
   } catch (err) {
     console.error(err);
   } finally {
@@ -98,9 +98,7 @@ onMounted(() => {
             {{ calculateHours(timesheet.activityStart, timesheet.activityEnd) }}
           </td>
           <td>
-            <RouterLink
-              :to="{ name: 'timesheet-details', params: { id: timesheet.id } }"
-            >
+            <RouterLink :to="{ name: 'timesheet-details', params: { id: timesheet.id } }">
               <button class="btn btn-primary">View</button>
             </RouterLink>
           </td>
@@ -109,9 +107,7 @@ onMounted(() => {
     </table>
   </div>
   <div v-else>
-    <AppAlert :show="!loader.isLoading" type="info">
-      No Timesheets found.
-    </AppAlert>
+    <AppAlert :show="!loader.isLoading" type="info"> No Timesheets found. </AppAlert>
   </div>
 </template>
 
